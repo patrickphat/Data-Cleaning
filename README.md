@@ -98,3 +98,24 @@ Nguyễn Chí Bảo `17520271`
 | 37   | anode-space-ratio   | numerical    | 103.03                           | 5.00                           | 7 (1.29%)        |
 | 38   | chrome-content      | numerical    | 99.60                            | 1.85                           | 3 (0.55%)        |
 | 39   | band-type           | nominal      | 3                                | 0                              | 0 (0.00%)        |
+
+### Tập dữ liệu 3
+
+- Tập dữ liệu được thu thập về thông tin của về các xét nghiệm của khối u ở ngực của các nữ bệnh nhân, từ thông tin này chúng ta có thể dự đoán khối u này có lành tính (benign) hay ác tính (malignant) không.
+- Tập dữ liệu này:
+  - có mẫu 699  trong tập dữ liệu
+  - mỗi mẫu có 10 thuộc tính
+
+|      | Tên thuộc tính              | Kiểu dữ liệu | Trung bình/ số giá trị phân biệt | Phương sai/số giá trị duy nhất | Số mẫu bị  thiếu |
+| ---- | --------------------------- | ------------ | -------------------------------- | ------------------------------ | ---------------- |
+| 0    | Sample-code-number          | nominal      | 645                              | 599                            | 0 (0.00%)        |
+| 1    | Clump-Thickness             | numerical    | 4.42                             | 2.81                           | 0 (0.00%)        |
+| 2    | Uniformity-of-Cell-Size     | numerical    | 3.13                             | 3.05                           | 0 (0.00%)        |
+| 3    | Uniformity-of-Cell-Shape    | numerical    | 3.21                             | 2.97                           | 0 (0.00%)        |
+| 4    | Marginal-Adhesion           | numerical    | 2.81                             | 2.85                           | 0 (0.00%)        |
+| 5    | Single-Epithelial-Cell-Size | numerical    | 3.22                             | 2.21                           | 0 (0.00%)        |
+| 6    | Bare-Nuclei                 | numerical    | 3.54                             | 3.64                           | 16 (2.29%)       |
+| 7    | Bland-Chromatin             | numerical    | 3.44                             | 2.44                           | 0 (0.00%)        |
+| 8    | Normal-Nucleoli             | numerical    | 2.87                             | 3.05                           | 0 (0.00%)        |
+| 9    | Mitoses                     | numerical    | 1.59                             | 1.71                           | 0 (0.00%)        |
+| 10   | Class                       | nominal      | 2                                | 0                              | 0 (0.00%)        |
