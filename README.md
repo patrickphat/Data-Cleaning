@@ -13,6 +13,13 @@ Nguyễn Chí Bảo `17520271`
 
 ## Bài tập 1 - Hiểu dữ liệu
 
+### Tập dữ liệu 1
+
+- Tập dữ liệu được thu thập về thông tin của các loại xe về các thuộc tính của chúng, từ thông tin này chúng ta có thể dự đoán được giá của xe
+- Tập dữ liệu này:
+  - 205 mẫu trong tập dữ liệu
+  - mỗi mẫu có 26 thuộc tính
+
 |      | Tên thuộc tính    | Kiểu dữ liệu | Trung bình/ số giá trị phân biệt | Std/Isolated valuess | Số mẫu bị  thiếu |
 | ---- | ----------------- | ------------ | -------------------------------- | -------------------- | ---------------- |
 | 0    | symboling         | nominal      | 6                                | 0                    | 0 (0.00%)        |
@@ -41,6 +48,13 @@ Nguyễn Chí Bảo `17520271`
 | 23   | city-mpg          | numerical    | 25.22                            | 6.53                 | 0 (0.00%)        |
 | 24   | highway-mpg       | numerical    | 30.75                            | 6.87                 | 0 (0.00%)        |
 | 25   | price             | numerical    | 13207.13                         | 7927.27              | 4 (1.95%)        |
+
+### Tập dữ liệu 2
+
+- Tập dữ liệu được thu thập về thông tin của các mảnh vỡ kim loại về các thuộc tính của chúng, từ thông tin này chúng ta có thể dự đoán được các mảnh vỡ này có phải là 1 phần của 1 ống đồng nối dài hay không.
+- Tập dữ liệu này:
+  - có 512 mẫu trong tập dữ liệu
+  - mỗi mẫu có 40 thuộc tính
 
 |      | Tên thuộc tính      | Kiểu dữ liệu | Trung bình/ số giá trị phân biệt | Phương sai/số giá trị duy nhất | Số mẫu bị  thiếu |
 | ---- | ------------------- | ------------ | -------------------------------- | ------------------------------ | ---------------- |
