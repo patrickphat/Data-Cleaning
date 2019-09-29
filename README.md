@@ -122,6 +122,8 @@ Nguyễn Chí Bảo `17520271`
 
 ## Bài tập 2 - Xử lý dữ liệu
 
+### Xây dựng chương trình
+
 Xây dựng một chương trình với câu lệnh chạy có dạng:
 
 ```bash
@@ -143,9 +145,7 @@ dạng được mô tả bên dưới.
 `--log` Tập tin chứa các thông tin đã xử lý. Nội dung chi tiết được
 mô tả chi tiết trong từng chức năng.
 
-
-
-#### option: Summary
+### option: Summary
 
 Chức năng chính: Tóm tắt dữ liệu
 
@@ -158,9 +158,7 @@ python data_processing.py --option summary --input <input_folder> --log <log_fil
 
 Nếu `--log` không được khai báo, tập tin log sẽ được mặc định lưu tại `<input_folder>/summary_log.txt`
 
-
-
-#### option: Replace 
+### option: Replace 
 
 Chức năng chính: Thay thế những chỗ bị thiếu dữ liệu
 
