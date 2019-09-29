@@ -9,7 +9,7 @@ Nguyễn Chí Bảo `17520271`
 ## Dữ liệu
 
 - Nằm ở 3 thư mục `dataset-1`, `dataset-2` và `dataset-3` 
-- Mỗi thư mục chứa 1 file dữ liệu đuôi `.data` và 1 file mô tả tên là `info.txt`
+- Mỗi thư mục chứa 3 file dữ liệu tên `load.data`, một file ghi kiểu thuộc tính `attributes.txt` và 1 file mô tả tên là `info.txt`
 
 ## Bài tập 1 - Hiểu dữ liệu
 
@@ -119,3 +119,63 @@ Nguyễn Chí Bảo `17520271`
 | 8    | Normal-Nucleoli             | numerical    | 2.87                             | 3.05                           | 0 (0.00%)        |
 | 9    | Mitoses                     | numerical    | 1.59                             | 1.71                           | 0 (0.00%)        |
 | 10   | Class                       | nominal      | 2                                | 0                              | 0 (0.00%)        |
+
+## Bài tập 2 - Xử lý dữ liệu
+
+Xây dựng một chương trình với câu lệnh chạy có dạng:
+
+```bash
+python data_processing.py --option <option> --input <input_folder> --output <output_file> --log <log_file>
+```
+
+Ví dụ: 
+
+```bash 
+python data_processing.py --option summary --input /dataset-1 --output output.xlsx --log log.txt 
+```
+
+Trong đó:
+`--option` Cho biết các thao tác cần thực hiện. Chi tiết mã tùy chọn được
+ghi trong từng chức năng cụ thể.
+`--input` Đường dẫn **thư mục** chứa dữ liệu đầu vào. Gồm tập tin chứa dữ liệu `load.data` và loại dữ liệu ứng với từng data `attributes.txt`
+`--output`: Đường dẫn tập tin đầu ra chứa dữ liệu sau khi xử lý. Định
+dạng được mô tả bên dưới.
+`--log` Tập tin chứa các thông tin đã xử lý. Nội dung chi tiết được
+mô tả chi tiết trong từng chức năng.
+
+#### option: Summary
+
+Chức năng chính: Tóm tắt dữ liệu
+
+```bash
+python data_processing.py --option summary --input <input_folder> --log <log_file>
+```
+
+`--option`= summary
+`--log`: đường dẫn tới file ghi lại các thông tin về số mẫu, số thuộc tính, liệt kê tên các thuộc tính và kiểu dữ liệu tương ứng (numeric/nominal)
+
+Nếu `--log` không được khai báo, tập tin log sẽ được mặc định lưu tại `<input_folder>/summary_log.txt`
+
+#### option: Replace 
+
+Chức năng chính: Thay thế những chỗ bị thiếu dữ liệu
+
+```bash
+python data_processing.py --option summary --input <input_folder> --output <output_file> --log <log_file>
+```
+
+`--option`= replace
+
+`--output`: đường dẫn tới file sau khi đã được xử lý. Định dạng file nên là `.data` hoặc `.csv`
+
+`--log`: đường dẫn tới file ghi cụ thể thuộc tính thiếu, số giá trị thiếu và giá trị mới dùng để thay thế. Cụ thể:
+
+```
+# thuộc tính: <tên thuộc tính>, <số giá trị thiếu>, <giá trị mới>
+...
+```
+
+Nếu `--log` không được khai báo, tập tin log sẽ được mặc định lưu tại `<input_folder>/replace_log.txt`
+
+Nếu `--output` không được khai báo, tập tin log sẽ được mặc định lưu tại `<input_folder>/replace_output.csv`
+

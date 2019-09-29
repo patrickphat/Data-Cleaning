@@ -1,11 +1,14 @@
 import numpy as np
 import pandas as pd
 
-def get_attributes_type(attribute_path, numeric_term):
+def get_attributes_type(attribute_path):
     attributes_dict = {}
-    
+    numeric_term = None
     with open(attribute_path,'r') as f:
-        for line in f:
+        for i,line in enumerate(f):
+            if i == 0:
+                numeric_term = line.replace('\n','').split(' ')[0]
+                continue
             line = line.strip() # Remove leading spaces 
             a = line.split(' ') # Tokenize that line by spacing
             prefix = a[0] # Get the first prefix of that line
@@ -23,6 +26,26 @@ def get_attributes_type(attribute_path, numeric_term):
                 attributes_dict[attribute] = 'cat' # categorical 
 
     return attributes_dict
+def numericize_list(mList):
+            result = []
+            for item in mList:
+                if isfloat(item):
+                    result.append(float(item))
+                    continue
+                    
+                if str(item).isdigit():
+                    result.append(item)
+            result = np.array(result)
+            result = result[~np.isnan(result)].tolist() # remove nan
+            return result
+def isfloat(value):
+    if value == np.nan:
+        return False
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False 
 
 def count_distinct(mlist):
     
@@ -46,7 +69,7 @@ def count_isolated(mlist):
     
     return len_iso
 
-def create_stat_df(df, attributes_type):   
+def create_stat_df(dataset_folder):   
     ''' Create a stat table(dataframe), for each line contains :
     - Attribute
     - Data type
@@ -61,7 +84,7 @@ def create_stat_df(df, attributes_type):
     OUTPUT:
 	- A statistical dataframe
     '''
-    
+    ## Helper Functions
     # Check if a string can be converted to float
     def isfloat(value):
         if value == np.nan:
@@ -85,7 +108,14 @@ def create_stat_df(df, attributes_type):
             result = np.array(result)
             result = result[~np.isnan(result)].tolist() # remove nan
             return result
+    
+    # Load data 
+    dataset_path = dataset_folder + 'load.data'
+    attributes_path = dataset_folder + 'attributes.txt'
+    attributes_type = get_attributes_type(attributes_path)
 
+    df = pd.read_csv(dataset_path,header=None, names=list(attributes_type.keys()))
+    len_df = len(df)
     df_col = ['Attribute', 'Data type','Mean/Distinct values',
               ' Std/Isolated values','Num of Nulls']
     df_data = []
@@ -121,4 +151,35 @@ def create_stat_df(df, attributes_type):
         # Append that line to df_data
         df_data.append(line)
     stat_df = pd.DataFrame(df_data,columns = df_col)
-    return stat_df
+    return stat_df, len_df
+def fill_missing_df(dataset_folder):
+     
+    # Load data 
+    dataset_path = dataset_folder + 'load.data'
+    attributes_path = dataset_folder + 'attributes.txt'
+    attributes_type = get_attributes_type(attributes_path)
+    df = pd.read_csv(dataset_path,header=None, names=list(attributes_type.keys()))
+    
+    filling_log = []
+    # Get the mode (most appeared words in the list)
+    def most_common(lst):
+        return max(set(lst), key=lst.count)
+        
+    for item in df.keys():
+        attribute_type = attributes_type[item]
+        
+        Series = df[item].tolist()
+
+        if attribute_type == "num":
+            Series = numericize_list(Series)
+            mean_Series = "%.2f" % np.mean(Series)
+            df[item] = df[item].replace("?",mean_Series)
+            filling_log.append(mean_Series)
+            
+        if attribute_type == "cat":
+
+            mode_Series = most_common(Series)
+            df[item] = df[item].replace("?",mode_Series)
+            filling_log.append(mode_Series)
+    return df,filling_log
+
