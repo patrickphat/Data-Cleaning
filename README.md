@@ -143,6 +143,8 @@ dạng được mô tả bên dưới.
 `--log` Tập tin chứa các thông tin đã xử lý. Nội dung chi tiết được
 mô tả chi tiết trong từng chức năng.
 
+
+
 #### option: Summary
 
 Chức năng chính: Tóm tắt dữ liệu
@@ -155,6 +157,8 @@ python data_processing.py --option summary --input <input_folder> --log <log_fil
 `--log`: đường dẫn tới file ghi lại các thông tin về số mẫu, số thuộc tính, liệt kê tên các thuộc tính và kiểu dữ liệu tương ứng (numeric/nominal)
 
 Nếu `--log` không được khai báo, tập tin log sẽ được mặc định lưu tại `<input_folder>/summary_log.txt`
+
+
 
 #### option: Replace 
 
