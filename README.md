@@ -163,7 +163,7 @@ Nếu `--log` không được khai báo, tập tin log sẽ được mặc đị
 Chức năng chính: Thay thế những chỗ bị thiếu dữ liệu
 
 ```bash
-python data_processing.py --option summary --input <input_folder> --output <output_file> --log <log_file>
+python data_processing.py --option replace  --input <input_folder> --output <output_file> --log <log_file>
 ```
 
 `--option`= replace
@@ -177,7 +177,39 @@ python data_processing.py --option summary --input <input_folder> --output <outp
 ...
 ```
 
+Nếu `--output` không được khai báo, tập tin log sẽ được mặc định lưu tại `<input_folder>/replace_output.csv`
+
 Nếu `--log` không được khai báo, tập tin log sẽ được mặc định lưu tại `<input_folder>/replace_log.txt`
 
-Nếu `--output` không được khai báo, tập tin log sẽ được mặc định lưu tại `<input_folder>/replace_output.csv`
+
+
+### option: Normalize
+
+Chức năng chính: Chuẩn hóa dữ liệu theo nhiều phương pháp khác nhau
+```bash
+python data_processing.py --option normalize  --input <input_folder> --output <output_file> --log <log_file>
+```
+
+`--option`= replace
+
+`--output`: đường dẫn tới file sau khi đã được xử lý. Định dạng file nên là `.data` hoặc `.csv`
+
+`--log`: đường dẫn tới file ghi cụ thể thuộc tính và phạm vi sau khi chuẩn hóa, lưu ý chỉ có **thuộc tính numeric** được chuẩn hóa. Cụ thể:
+
+Sau đó chương trình sẽ yêu cầu nhập loại chuẩn hóa:
+
+- Nhập "minmax" để chuẩn hóa Min Max, chương trình sẽ yêu cầu nhập thêm cận trái mới (new_min) và cận phải mới (new_max)
+- Nhập "zscore" để chuẩn hóa Z-Score
+
+```
+# thuộc tính: <tên thuộc tính>, (<cận trái>, <cận phải>)
+...
+```
+
+Nếu `--output` không được khai báo, tập tin log sẽ được mặc định lưu tại `<input_folder>/normalize_output.csv`
+
+Nếu `--log` không được khai báo, tập tin log sẽ được mặc định lưu tại `<input_folder>/normalize_log.txt`
+
+
+
 

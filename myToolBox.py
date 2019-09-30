@@ -183,3 +183,97 @@ def fill_missing_df(dataset_folder):
             filling_log.append(mode_Series)
     return df,filling_log
 
+class Normalizer:
+    def __init__(self,mode,new_min=0,new_max=1):
+        self.mode = mode
+        self.new_min = new_min
+        self.new_max = new_max 
+        self.min_max_dict = {} # Dictionary mapping from attributes name to a tuple of (min,max)
+        self.z_score_dict = {} # Dictionary mapping from attributes name to a tuple of (mean,std)
+        self.transform_log = {} # Dictionary mapping from attributes name to a tuple of (min_log,max_log)
+        
+    def transform_minmax_Series(self,Series,min_max):
+        # Retrieve min max from tuple
+        min,max = min_max
+        
+        # Convert to float in case of strings
+        Series = Series.astype(float)
+        
+        # Transform the Series to min max values 
+        Series = (Series - min)/(max-min)*(self.new_max-self.new_min)+self.new_min
+        
+        return Series.round(2) # round to precision of 2 
+    
+    def transform_zscore_Series(self,Series,mean_std):
+        # Retrieve mean, std from tuple
+        mean,std = mean_std
+        
+        # Convert to float in case of strings
+        Series = Series.astype(float)
+        
+        # Transform the Series to min max values 
+        Series = ((Series - mean)/std).round(2)
+        
+        # Series_transform_log monitors the range of normalization within an attribute
+        Series_transform_log = (np.min(Series),np.max(Series))
+        return Series,Series_transform_log
+        
+        
+    
+    def fit_transform(self,dataset_folder):
+        
+        # Load data 
+        df,_ = fill_missing_df(dataset_folder) # Fill missing value
+        attributes_path = dataset_folder + 'attributes.txt'
+        attributes_type = get_attributes_type(attributes_path)
+        
+        # Min-max 
+        if self.mode == 'minmax':
+            # Fitting min max of each attribute to the Normalize
+            for item in df.keys():
+                if attributes_type[item] == 'cat':
+                    continue
+
+                if attributes_type[item] == 'num':
+                    attri_min = float(np.min(df[item]))
+                    attri_max = float(np.max(df[item]))
+                    self.min_max_dict[item] = (attri_min,attri_max)
+
+            # Transform the dataframe
+            for item in df.keys():
+                if attributes_type[item] == 'cat':
+                    continue
+
+                if attributes_type[item] == 'num':
+                    # Replace Series values with new normalized values with the scaler
+                    df[item] = self.transform_minmax_Series(df[item], self.min_max_dict[item])
+                    self.transform_log[item] = (self.new_min,self.new_max)
+            
+            return df,self.transform_log
+        
+        # Z-Score
+        elif self.mode == 'zscore':
+            # Fitting min max of each attribute to the Normalize
+            for item in df.keys():
+                if attributes_type[item] == 'cat':
+                    continue
+
+                if attributes_type[item] == 'num':
+                    attri_items = df[item].astype(float)
+                    attri_mean =  np.mean(attri_items)
+                    attri_std =  np.std(attri_items)
+                    self.z_score_dict[item] = (attri_mean,attri_std)
+                    
+            # Transform the dataframe
+            for item in df.keys():
+                if attributes_type[item] == 'cat':
+                    continue
+
+                if attributes_type[item] == 'num':
+                    # Replace Series values with new normalized values with the scaler
+                    df[item],transform_log = self.transform_zscore_Series(df[item], self.z_score_dict[item])
+                    self.transform_log[item]= transform_log
+            
+            return df,self.transform_log
+                    
+            
