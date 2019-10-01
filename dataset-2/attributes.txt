@@ -1,3 +1,4 @@
+numeric
 1. timestamp: nomial;19500101 - 21001231 # Sửa thành nomial
  2. cylinder number: nominal
  3. customer: nominal; 

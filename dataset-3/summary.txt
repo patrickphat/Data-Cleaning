@@ -1,0 +1,15 @@
+# So mau: 699
+
+# So thuoc tinh: 11
+
+# thuoc tinh 1: "Sample-code-number" nominal
+# thuoc tinh 2: "Clump-Thickness" numerical
+# thuoc tinh 3: "Uniformity-of-Cell-Size" numerical
+# thuoc tinh 4: "Uniformity-of-Cell-Shape" numerical
+# thuoc tinh 5: "Marginal-Adhesion" numerical
+# thuoc tinh 6: "Single-Epithelial-Cell-Size" numerical
+# thuoc tinh 7: "Bare-Nuclei" numerical
+# thuoc tinh 8: "Bland-Chromatin" numerical
+# thuoc tinh 9: "Normal-Nucleoli" numerical
+# thuoc tinh 10: "Mitoses" numerical
+# thuoc tinh 11: "Class" nominal

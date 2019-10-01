@@ -1,0 +1,11 @@
+# thuoc tinh 1: "Sample-code-number", 0, 1182404
+# thuoc tinh 2: "Clump-Thickness", 0, 4.42
+# thuoc tinh 3: "Uniformity-of-Cell-Size", 0, 3.13
+# thuoc tinh 4: "Uniformity-of-Cell-Shape", 0, 3.21
+# thuoc tinh 5: "Marginal-Adhesion", 0, 2.81
+# thuoc tinh 6: "Single-Epithelial-Cell-Size", 0, 3.22
+# thuoc tinh 7: "Bare-Nuclei", 16, 3.54
+# thuoc tinh 8: "Bland-Chromatin", 0, 3.44
+# thuoc tinh 9: "Normal-Nucleoli", 0, 2.87
+# thuoc tinh 10: "Mitoses", 0, 1.59
+# thuoc tinh 11: "Class", 0, 2
