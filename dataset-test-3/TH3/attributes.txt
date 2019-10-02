@@ -1,0 +1,12 @@
+numerical
+1. Sample code number:             cat id number
+   2. Clump Thickness:             numerical  1 - 10
+   3. Uniformity of Cell Size:       numerical  1 - 10
+   4. Uniformity of Cell Shape:      numerical  1 - 10
+   5. Marginal Adhesion:             numerical  1 - 10
+   6. Single Epithelial Cell Size:   numerical  1 - 10
+   7. Bare Nuclei:                   numerical  1 - 10
+   8. Bland Chromatin:              numerical  1 - 10
+   9. Normal Nucleoli:               numerical 1 - 10
+  10. Mitoses:                      numerical  1 - 10
+  11. Class:                      cat  (2 for benign, 4 for malignant)

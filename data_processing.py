@@ -28,11 +28,62 @@ def replace_option(dataset_folder,output_path,log_path):
             attri_null = line_data['Num of Nulls'].split(' ')[0]
             f.write('# thuoc tinh {}: "{}", {}, {}\n'.format(i+1,attri_name,attri_null,attri_replace))
     df.to_csv(output_path)
-    print('Option executed: "summary"')
+    print('Option executed: "replace"')
     print('- output file: ' + output_path)
-    print('- summary log file: '+ log_path)
+    print('- replace log file: '+ log_path)
     return output_path,log_path
+def discretize_option(dataset_folder,output_path,log_path):
     
+    # Choose normalization mode
+    print('Enter binning mode: "width" or "depth"?')
+    normalizer_mode = input()
+    
+    # df and discretize log placeholder
+    df = None
+    discretize_log = None
+
+    # If option == equal-width binning
+    if normalizer_mode == "width":
+        # User input for width binning
+        print("You chose equal-width binning. How many equal bins do you want to discretize?")
+        num_bins = float(input())
+        
+        # Declare discretizer
+        Disc = Discretizer(mode = "width",width=1/num_bins)
+        df,discretize_log = Disc.fit_transform(dataset_folder)
+        
+    # If options == equal-depth binning
+    elif normalizer_mode == "depth":
+        # User input for width binning
+        print("You chose equal-depth binning. Enter your depth:")
+        depth = float(input())
+        # Declare discretizer
+        Disc= Discretizer(mode = "depth",depth=depth)
+        df,discretize_log = Disc.fit_transform(dataset_folder)
+
+    with open(log_path,'w') as f:
+        # For i in numbers of attribute
+        for i,item in enumerate(discretize_log.keys()):
+            attri_name = item
+            attri_bin_freq_s = discretize_log[item] # (bin,frequency) e.g ((0,3),7)
+            attri_bin_freq_s = sorted(attri_bin_freq_s, key=lambda x: x[0][0]) # Sort bins
+            f.write("# thuoc tinh {}: {}, ".format(i,item))
+            num_bins = len(attri_bin_freq_s)
+            for j,attri_bin_freq in enumerate(attri_bin_freq_s):
+                bin = attri_bin_freq[0]
+                freq = attri_bin_freq[1]
+                f.write(' {}:{}'.format(bin,freq))
+                # If not the last attribute, keep adding commas
+                if j!=num_bins-1:
+                    f.write(",")
+                else:
+                    f.write("\n")
+    df.to_csv(output_path)
+    print('Option executed: "discretization"')
+    print('- output file: ' + output_path)
+    print('- discretization log file: '+ log_path)
+    return output_path,log_path
+
 def normalize_option(dataset_folder,output_path,log_path):
     #stats,len_df = create_stat_df(dataset_folder)
     
@@ -70,7 +121,7 @@ def normalize_option(dataset_folder,output_path,log_path):
     df.to_csv(output_path)
     print('Option executed: "normalization"')
     print('- output file: ' + output_path)
-    print('- summary log file: '+ log_path)
+    print('- normalization log file: '+ log_path)
     return output_path,log_path
 
 if __name__ == "__main__":
@@ -79,7 +130,7 @@ if __name__ == "__main__":
     parser.add_argument("--input",help='path to input file')
     parser.add_argument("--output",help='path to output file')
     parser.add_argument("--log",help='path to log file')
-    options = ['summary','replace','normalize']
+    options = ['summary','replace','normalize','discretize']
 
     args = parser.parse_args()
     dataset_folder = args.input
@@ -108,10 +159,14 @@ if __name__ == "__main__":
         # If user doesn't declare output 
         if args.output == None:
             output_path = dataset_folder + 'replace_output.csv'
-        
+        else:
+            output_path = args.output
+
         # If user doesn't declare log 
         if args.log == None:
             log_path = dataset_folder + 'replace_log.txt'
+        else:
+            log_path = args.log
 
         _,_ = replace_option(dataset_folder,output_path,log_path)
 
@@ -123,9 +178,33 @@ if __name__ == "__main__":
         # If user doesn't declare output 
         if args.output == None:
             output_path = dataset_folder + 'normalize_output.csv'
-        
+        else:
+            output_path = args.output
+
         # If user doesn't declare log 
         if args.log == None:
             log_path = dataset_folder + 'normalize_log.txt'
+        else:
+            log_path = args.log
 
         _,_ = normalize_option(dataset_folder,output_path,log_path)
+
+    if args.option == 'discretize':
+
+        output_path = None
+        log_path = None
+
+        # If user doesn't declare output 
+        if args.output == None:
+            output_path = dataset_folder + 'discretize_output.csv'
+        else:
+            output_path = args.output
+
+        # If user doesn't declare log 
+        if args.log == None:
+            log_path = dataset_folder + 'discretize_log.txt'
+        else:
+            log_path = args.log
+
+        _,_ = discretize_option(dataset_folder,output_path,log_path)
+

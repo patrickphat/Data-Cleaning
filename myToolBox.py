@@ -202,7 +202,7 @@ class Normalizer:
         # Transform the Series to min max values 
         Series = (Series - min)/(max-min)*(self.new_max-self.new_min)+self.new_min
         
-        return Series.round(2) # round to precision of 2 
+        return Series.round(4) # round to precision of 2 
     
     def transform_zscore_Series(self,Series,mean_std):
         # Retrieve mean, std from tuple
@@ -212,7 +212,7 @@ class Normalizer:
         Series = Series.astype(float)
         
         # Transform the Series to min max values 
-        Series = ((Series - mean)/std).round(2)
+        Series = ((Series - mean)/std).round(4)
         
         # Series_transform_log monitors the range of normalization within an attribute
         Series_transform_log = (np.min(Series),np.max(Series))
@@ -235,8 +235,8 @@ class Normalizer:
                     continue
 
                 if attributes_type[item] == 'num':
-                    attri_min = float(np.min(df[item]))
-                    attri_max = float(np.max(df[item]))
+                    attri_min = float(np.min(df[item].astype('float')))
+                    attri_max = float(np.max(df[item].astype('float')))
                     self.min_max_dict[item] = (attri_min,attri_max)
 
             # Transform the dataframe
@@ -261,6 +261,7 @@ class Normalizer:
                 if attributes_type[item] == 'num':
                     attri_items = df[item].astype(float)
                     attri_mean =  np.mean(attri_items)
+                
                     attri_std =  np.std(attri_items)
                     self.z_score_dict[item] = (attri_mean,attri_std)
                     
@@ -272,8 +273,146 @@ class Normalizer:
                 if attributes_type[item] == 'num':
                     # Replace Series values with new normalized values with the scaler
                     df[item],transform_log = self.transform_zscore_Series(df[item], self.z_score_dict[item])
-                    self.transform_log[item]= transform_log
+                    self.transform_log[item] = transform_log
             
             return df,self.transform_log
+                     
+class Discretizer:
+    def __init__(self,mode,depth=4,width=4):
+        self.mode = mode
+        self.depth = depth
+        self.width = width
+        self.attri_to_bins = {} # A dict map from attri to bin
+        self.discretize_log = {} # A dict map from attri to list of tuples (bin,frequency)        
+    def fit_transform(self,dataset_folder):
+        # Load data 
+        df,_ = fill_missing_df(dataset_folder)
+        attributes_path = dataset_folder + 'attributes.txt'
+        attributes_type = get_attributes_type(attributes_path)
+ 
+        # Fit to data to create bins
+        if self.mode == 'width':
+            for item in df.keys():
+                if attributes_type[item] == 'num':
+                   
+                    Series = df[item]
+                    bins = self.width_discretize(Series,width = self.width)
+                    self.attri_to_bins[item] = bins
+                else: continue
+        elif self.mode == 'depth':
+            for item in df.keys():
+                if attributes_type[item] == 'num':
+                    Series = df[item]
+                    bins = self.depth_discretize(Series,depth = self.depth)
+                    self.attri_to_bins[item] = bins
+                else: continue
+        
+        # Transform dataframe to discretized bins
+        for item in df.keys():
+            if attributes_type[item] == 'num':
+                    Series = df[item]
+                    attri_bins = self.attri_to_bins[item]
+                    df[item] = Series.astype(float).map(lambda x: self.val_to_bin(x,attri_bins))
+            else: continue
+    
+        # Log for discretization
+        for item in df.keys():
+            if attributes_type[item] == 'num':
+                bins_frequency = []
+                # get iterator items (bins,frequency) of count object
+                for count_tuple in df[item].value_counts().items(): 
+                    bins_frequency.append(count_tuple)
                     
+                self.discretize_log[item] = bins_frequency
+            else: continue
+        
+        return df, self.discretize_log
+
             
+    def width_discretize(self,Series,width):
+        '''
+        Input: a Series and width of discretization (proportional 0->1.0)
+        Output: list of bins
+        '''
+        sorted_list = sorted(Series.astype(float).tolist())
+        left_bound = np.min(sorted_list)
+        right_bound = np.max(sorted_list)
+        step = (right_bound - left_bound)*width
+        bins = []
+
+        pivot = left_bound
+    
+        while pivot < right_bound:
+            
+            if pivot + width > right_bound:
+                # Round to work with numerical error
+                bins.append((np.round(pivot,4),right_bound)) #
+                break
+
+            # Round to work with numerical error
+            bins.append((np.round(pivot,4),np.round(pivot+step,4))) 
+            pivot += np.round(step,4)
+        return bins
+
+    def depth_discretize(self,Series,depth):
+        '''
+        Input: a Series and width of discretization
+        Output: list of bins
+        '''
+        sorted_list = sorted(Series.astype(float).tolist())
+
+        left_bound = 0
+        right_bound = len(sorted_list)-1
+
+        bins = []
+
+        pivot = 0
+        while pivot < right_bound:
+            left_bin = sorted_list[pivot]
+
+            if pivot + depth >= right_bound:
+                right_bin = sorted_list[right_bound]
+                bins.append((left_bin,right_bin))
+                break
+
+            # Round to work with numerical error
+            right_bin = sorted_list[pivot+int(depth)-1]
+            bins.append((left_bin,right_bin)) 
+            pivot += int(depth) - 1 
+        return bins
+    
+    def val_in_bin(self,value,bin,mode):
+        '''
+        Input: value & bin (tuple of left bound and right bound)
+        Output: True or False if value in that bin
+        '''
+
+        left_bound, right_bound = bin
+        value
+        if mode == 'leftest': 
+            return (value <= right_bound and value >= left_bound)
+        if mode == 'mid':
+            return (value <= right_bound and value > left_bound)
+        if mode == 'rightest':
+            return (value <= right_bound and value > left_bound)
+
+    def val_to_bin(self,value,bins):
+        '''
+        Input: value & sorted list of bins (bins are tuple of left bound and right bound)
+        Output: bin that value falls in (the leftest bin)
+        '''
+        
+        for i,bin in enumerate(bins):
+            if i == 0:
+
+                if self.val_in_bin(value,bin,mode="leftest"):
+                    return bin
+                else: continue
+            elif i == len(bins)-1:
+
+                if self.val_in_bin(value,bin,mode="rightest"):
+                    return bin
+                else: continue
+            elif self.val_in_bin(value,bin,mode="mid"):
+                return bin
+            else: continue
